@@ -17,6 +17,12 @@ namespace SalvagerEngine.Objects
         {
             get { return mPosition; }
         }
+        float mRotation;
+        public float Rotation
+        {
+            get { return mRotation; }
+            set { mRotation = value; }
+        }
 
         /* Constructors */
 
