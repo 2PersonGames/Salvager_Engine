@@ -8,18 +8,17 @@ using SalvagerEngine.Games;
 using SalvagerEngine.Objects;
 using SalvagerEngine.Components;
 
-namespace SalvagerEngine.Objects
+namespace SalvagerEngine.Objects.Effects
 {
-    public class PhysicalObject : GameObject
+    public class Rotator : EffectObject
     {
         /* Class Variables */
 
-        Vector2 mPosition;
-        public Vector2 Position
+        public new PhysicalObject Parent
         {
-            get { return mPosition; }
-            set { mPosition = value; }
+            get { return base.Parent as PhysicalObject; }
         }
+
         float mRotation;
         public float Rotation
         {
@@ -29,20 +28,22 @@ namespace SalvagerEngine.Objects
 
         /* Constructors */
 
-        public PhysicalObject(Vector2 position, Level component_owner)
-            : base(component_owner, 0.0f)
+        public Rotator(PhysicalObject parent, float rotation)
+            : base(parent, 0.0f)
         {
-            mPosition = position;
+            mRotation = rotation;
         }
 
         /* Overrides */
 
         protected override void Tick(float delta)
         {
+            Parent.Rotation += mRotation * delta;
         }
 
-        protected override void Render(Camera camera)
+        public override float GetDepth()
         {
+            return -1.0f;
         }
     }
 }

@@ -1,11 +1,22 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using SalvagerEngine.Games;
+
 namespace SalvagerEngine.Components
 {
-    public struct Camera
+    public class Camera : IDisposable
     {
+        /* Class Variables */
+
+        SpriteBatch mRenderer;
+        public SpriteBatch Renderer
+        {
+            get { return mRenderer; }
+        }
+
         SpriteSortMode mSpriteSortMode;
         public SpriteSortMode SpriteSortMode
         {
@@ -46,6 +57,44 @@ namespace SalvagerEngine.Components
         public Matrix View
         {
             get { return mView; }
+        }
+
+        /* Constructors */
+
+        public Camera(SalvagerGame game)
+        {
+            mRenderer = new SpriteBatch(game.GraphicsDevice);
+            mSpriteSortMode = Microsoft.Xna.Framework.Graphics.SpriteSortMode.Immediate;
+            mBlendState = BlendState.AlphaBlend;
+            mSamplerState = SamplerState.AnisotropicClamp;
+            mDepthStencilState = DepthStencilState.Default;
+            mRasterizerState = RasterizerState.CullNone;
+            mEffect = null;
+            mView = Matrix.Identity;
+        }
+
+        /* Events */
+
+        public void Begin()
+        {
+            mRenderer.Begin(mSpriteSortMode, mBlendState, mSamplerState, mDepthStencilState, mRasterizerState, mEffect, mView);
+        }
+
+        public void End()
+        {
+            mRenderer.End();
+        }
+
+        /* Interfaces */
+
+        public void Dispose()
+        {
+            /* Dispose of the renderer */
+            if (mRenderer != null)
+            {
+                mRenderer.Dispose(); 
+                mRenderer = null;
+            }
         }
     }
 }

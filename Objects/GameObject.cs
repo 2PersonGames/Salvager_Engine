@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using SalvagerEngine.Components;
 
 namespace SalvagerEngine.Objects
 {
-    public abstract class GameObject
+    public class GameObject
     {
         /* Typdefs and Constants */
 
@@ -46,34 +50,35 @@ namespace SalvagerEngine.Objects
             set { mVisible = value; }
         }
 
-        List<GameObject> mChildren;
-        ReaderWriterLockSlim mChildrenLock;
+        bool mChildrenArrayDirty;
+        GameObject[] mChildrenArray;
+        ReaderWriterLockSlim mChildrenArrayLock;
+        List<GameObject> mChildrenList;
+        ReaderWriterLockSlim mChildrenListLock;
 
         /* Constructors */
 
-        public GameObject(Level component_owner)
+        public GameObject(Level component_owner, float tick_max)
         {
             /* Get a unique ID for this object */
             mIdentifier = Interlocked.Increment(ref MasterIdentifier) - 1;
 
             /* Set some defaults */
-            mLock = new ReaderWriterLockSlim();
+            mLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
             mComponentOwner = component_owner;
             mVisible = true;
             mEnabled = true;
             mTickCurrent = 0.0f;
-            mTickMax = 0.0f;
+            mTickMax = tick_max;
 
-            mChildren = new List<GameObject>();
-            mChildrenLock = new ReaderWriterLockSlim();
-
-            /* Initialise the object */
-            Initialise(out mTickMax);
+            mChildrenArrayDirty = false;
+            mChildrenArray = new GameObject[0];
+            mChildrenArrayLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+            mChildrenList = new List<GameObject>();
+            mChildrenListLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         }
 
         /* Functions */
-
-        protected abstract void Initialise(out float tick_max);
 
         public void Update(float delta)
         {
@@ -103,12 +108,6 @@ namespace SalvagerEngine.Objects
                     {
                         mLock.ExitWriteLock();
                     }
-
-                    /* Update each child */
-                    foreach (GameObject obj in GetChildrenAsArray())
-                    {
-                        obj.Update(delta);
-                    }
                 }
             }
             catch (Exception e)
@@ -119,13 +118,62 @@ namespace SalvagerEngine.Objects
             finally
             {
                 /* Unlock this object */
-                if (mLock.IsUpgradeableReadLockHeld) mLock.ExitUpgradeableReadLock();
+                if (mLock.IsUpgradeableReadLockHeld)
+                {
+                    mLock.ExitUpgradeableReadLock();
+                }
+            }
+
+            try
+            {
+                /* Lock the children array */
+                mChildrenArrayLock.EnterUpgradeableReadLock();
+
+                /* Check if the child array is dirty */
+                if (mChildrenArrayDirty)
+                {
+                    try
+                    {
+                        /* Enter a write lock */
+                        mChildrenArrayLock.EnterWriteLock();
+
+                        /* Copy the array into the list */
+                        mChildrenList = mChildrenList.OrderBy(obj => obj.GetDepth()).ToList();
+                        mChildrenArray = mChildrenList.ToArray();
+
+                        /* Set the flag to clean */
+                        mChildrenArrayDirty = false;
+                    }
+                    finally
+                    {
+                        /* Release the write lock */
+                        mChildrenArrayLock.ExitWriteLock();
+                    }
+                }
+
+                /* Update the children in parallel */
+                Parallel.ForEach(mChildrenArray, obj =>
+                {
+                    obj.Update(delta);
+                });
+            }
+            catch (Exception e)
+            {
+                /* Log the exception */
+                mComponentOwner.Game.Log(e);
+            }
+            finally
+            {
+                /* Release the lock */
+                mChildrenArrayLock.ExitUpgradeableReadLock();
             }
         }
 
-        protected abstract void Tick(float delta);
+        protected virtual void Tick(float delta)
+        {
+        }
 
-        public void Draw(SpriteBatch renderer)
+        public void Draw(Camera renderer)
         {
             try
             {
@@ -139,7 +187,7 @@ namespace SalvagerEngine.Objects
                     Render(renderer);
 
                     /* Render each child */
-                    foreach (GameObject obj in GetChildrenAsArray())
+                    foreach (GameObject obj in ForEachChild())
                     {
                         obj.Draw(renderer);
                     }
@@ -157,80 +205,38 @@ namespace SalvagerEngine.Objects
             }
         }
 
-        protected abstract void Render(SpriteBatch renderer);
+        protected virtual void Render(Camera renderer)
+        {
+        }
+
+        /* Events */
+
+        public void Destroy()
+        {
+            GameObject parent = FindParent();
+            if (parent != null)
+            {
+                parent.RemoveChild(this);
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+        }
 
         /* Accessors */
 
-        private GameObject[] GetChildrenAsArray()
-        {
-            try
-            {
-                mChildrenLock.EnterReadLock();
-                return mChildren.ToArray();
-            }
-            catch (Exception e)
-            {
-                mComponentOwner.Game.Log(e);
-                return new GameObject[0];
-            }
-            finally
-            {
-                mChildrenLock.ExitReadLock();
-            }
-        }
-
-        private GameObject[] GetChildrenAsArray(Type type)
-        {
-            try
-            {
-                /* Lock the list */
-                mChildrenLock.EnterReadLock();
-
-                /* Build the list according to the object type */
-                List<GameObject> objects = new List<GameObject>();
-                foreach (GameObject obj in mChildren)
-                {
-                    if (obj.GetType() == type || obj.GetType().IsSubclassOf(type)) objects.Add(obj);
-                }
-
-                /* Return the list as an array */
-                return objects.ToArray();
-            }
-            catch (Exception e)
-            {
-                mComponentOwner.Game.Log(e);
-                return new GameObject[0];
-            }
-            finally
-            {
-                mChildrenLock.ExitReadLock();
-            }
-        }
-
         public bool IsChildOf(GameObject obj)
         {
-            try
-            {
-                obj.mChildrenLock.EnterReadLock();
-                return obj.mChildren.Contains(this);
-            }
-            catch (Exception e)
-            {
-                mComponentOwner.Game.Log(e);
-                return false;
-            }
-            finally
-            {
-                obj.mChildrenLock.ExitReadLock();
-            }
+            return obj.IsParentOf(this);
         }
 
         public bool IsParentOf(GameObject obj)
         {
             try
             {
-                mChildrenLock.EnterReadLock();
-                return mChildren.Contains(obj);
+                mChildrenArrayLock.EnterReadLock();
+                return mChildrenArray.Contains(obj);
             }
             catch (Exception e)
             {
@@ -239,7 +245,7 @@ namespace SalvagerEngine.Objects
             }
             finally
             {
-                mChildrenLock.ExitReadLock();
+                mChildrenArrayLock.ExitReadLock();
             }
         }
 
@@ -247,8 +253,8 @@ namespace SalvagerEngine.Objects
         {
             try
             {
-                mChildrenLock.EnterReadLock();
-                return mChildren.Find(delegate(GameObject obj) { return obj.Identifier == identifier; });
+                mChildrenArrayLock.EnterReadLock();
+                return mChildrenArray.Where(obj => obj.Identifier == identifier).FirstOrDefault();
             }
             catch (Exception e)
             {
@@ -257,8 +263,108 @@ namespace SalvagerEngine.Objects
             }
             finally
             {
-                mChildrenLock.ExitReadLock();
+                mChildrenArrayLock.ExitReadLock();
             }
+        }
+
+        public IEnumerable<GameObject> ForEachChild()
+        {
+            try
+            {
+                mChildrenArrayLock.EnterReadLock();
+                foreach (GameObject obj in mChildrenArray)
+                {
+                    yield return obj;
+                }
+            }
+            finally
+            {
+                mChildrenArrayLock.ExitReadLock();
+            }
+        }
+
+        public IEnumerable<T> ForEachChild<T>() 
+            where T : GameObject
+        {
+            try
+            {
+                mChildrenArrayLock.EnterReadLock();
+                foreach (T obj in mChildrenArray.Where(obj => obj is T))
+                {
+                    yield return obj;
+                }
+            }
+            finally
+            {
+                mChildrenArrayLock.ExitReadLock();
+            }
+        }
+
+        public IEnumerable<GameObject> ForEachAll()
+        {
+            /* Iterate through each child */
+            foreach (GameObject a in ForEachChild())
+            {
+                /* Yield the child */
+                yield return a;
+
+                /* Recursively yield all it's children and their children */
+                foreach (GameObject b in a.ForEachAll())
+                {
+                    yield return b;
+                }
+            }
+        }
+
+        public IEnumerable<T> ForEachAll<T>()
+            where T : GameObject
+        {
+            /* Iterate through each child */
+            foreach (GameObject a in ForEachChild())
+            {
+                /* Yield the child */
+                if (a is T)
+                {
+                    yield return a as T;
+                }
+
+                /* Recursively yield all it's children and their children */
+                foreach (T b in a.ForEachAll<T>())
+                {
+                    yield return b;
+                }
+            }
+        }
+
+        public GameObject FindParent()
+        {
+            return FindParent(mComponentOwner.Root);
+        }
+
+        private GameObject FindParent(GameObject obj)
+        {
+            if (obj.IsParentOf(this))
+            {
+                return obj;
+            }
+            else
+            {
+                foreach (GameObject child in obj.ForEachChild())
+                {
+                    GameObject parent = FindParent(child);
+                    if (parent != null)
+                    {
+                        return parent;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public virtual float GetDepth()
+        {
+            return 0.0f;
         }
 
         /* Mutators */
@@ -267,8 +373,8 @@ namespace SalvagerEngine.Objects
         {
             try
             {
-                mChildrenLock.EnterWriteLock();
-                mChildren.Add(obj);
+                mChildrenListLock.EnterWriteLock();
+                mChildrenList.Add(obj);
                 return true;
             }
             catch (Exception e)
@@ -278,7 +384,8 @@ namespace SalvagerEngine.Objects
             }
             finally
             {
-                mChildrenLock.ExitWriteLock();
+                mChildrenArrayDirty = true;
+                mChildrenListLock.ExitWriteLock();
             }
         }
 
@@ -286,8 +393,16 @@ namespace SalvagerEngine.Objects
         {
             try
             {
-                mChildrenLock.EnterWriteLock();
-                return mChildren.Remove(obj);
+                mChildrenListLock.EnterWriteLock();
+                if (mChildrenList.Remove(obj))
+                {
+                    mChildrenArrayDirty = true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception e)
             {
@@ -296,7 +411,7 @@ namespace SalvagerEngine.Objects
             }
             finally
             {
-                mChildrenLock.ExitWriteLock();
+                mChildrenListLock.ExitWriteLock();
             }
         }
 
@@ -304,8 +419,19 @@ namespace SalvagerEngine.Objects
         {
             try
             {
-                mChildrenLock.EnterWriteLock();
-                return mChildren.RemoveAll(delegate(GameObject obj) { return obj.Identifier == identifier; }) > 0;
+                /* Get a write lock*/
+                mChildrenListLock.EnterWriteLock();
+
+                /* Remove all the children with this ID */
+                if (mChildrenList.RemoveAll(obj => obj.Identifier == Identifier) > 0)
+                {
+                    mChildrenArrayDirty = true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception e)
             {
@@ -314,7 +440,7 @@ namespace SalvagerEngine.Objects
             }
             finally
             {
-                mChildrenLock.ExitWriteLock();
+                mChildrenListLock.ExitWriteLock();
             }
         }
     }

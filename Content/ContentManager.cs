@@ -13,7 +13,7 @@ namespace SalvagerEngine.Content
     {
         /* Typedefs and Constants */
 
-        const string DataFileExtension = ".dat";
+        const string DataFileExtension = "dat";
 
         struct TextureData
         {
@@ -52,6 +52,8 @@ namespace SalvagerEngine.Content
 
         /* Class Variables */
 
+        SalvagerGame mGame;
+
         ReaderWriterLockSlim mTexturesLock;
         Dictionary<string, TextureData> mTextures;
         ReaderWriterLockSlim mSoundsLock;
@@ -61,9 +63,10 @@ namespace SalvagerEngine.Content
 
         /* Constructors */
 
-        public ContentManager(SalvagerGame game, string root_directory)
+        public ContentManager(Game game, string root_directory)
             : base(game.Content.ServiceProvider, root_directory)
         {
+            mGame = game as SalvagerGame;
             mTexturesLock = new ReaderWriterLockSlim();
             mTextures = new Dictionary<string, TextureData>();
             mSoundsLock = new ReaderWriterLockSlim();
@@ -91,7 +94,7 @@ namespace SalvagerEngine.Content
             try
             {
                 /* Lock the textures */
-                mTexturesLock.ExitReadLock();
+                mTexturesLock.EnterReadLock();
 
                 /* Check the file exists */
                 if (mTextures.ContainsKey(filename))
@@ -159,16 +162,24 @@ namespace SalvagerEngine.Content
 
         public void LoadTextureMap(string filename)
         {
-            LoadTextureMap(filename, filename + DataFileExtension); 
+            LoadTextureMap(filename, Path.ChangeExtension(filename, DataFileExtension)); 
         }
 
         public void LoadTextureMap(string texture_filename, string data_filename)
         {
             /* Load the textures */
-            Texture2D texture = Load<Texture2D>(texture_filename);
+            Texture2D texture = null;
+            if (string.IsNullOrWhiteSpace(Path.GetExtension(texture_filename)))
+            {
+                texture = Load<Texture2D>(Path.Combine(RootDirectory, texture_filename));
+            }
+            else
+            {
+                texture = Texture2D.FromStream(mGame.GraphicsDevice, new StreamReader(Path.Combine(RootDirectory, texture_filename)).BaseStream);
+            }
 
             /* Open the file stream */
-            using (StreamReader reader = new StreamReader(data_filename))
+            using (StreamReader reader = new StreamReader(Path.Combine(RootDirectory, data_filename)))
             {
                 try
                 {
@@ -176,8 +187,8 @@ namespace SalvagerEngine.Content
                     string[] line = reader.ReadLine().Split('\t');
 
                     /* Read the source rectangle */
-                    Rectangle source = new Rectangle(int.Parse(line[0]),
-                        int.Parse(line[1]), int.Parse(line[2]), int.Parse(line[3]));
+                    Rectangle source = new Rectangle(int.Parse(line[1]),
+                        int.Parse(line[2]), int.Parse(line[3]), int.Parse(line[4]));
 
                     try
                     {
@@ -185,7 +196,7 @@ namespace SalvagerEngine.Content
                         mTexturesLock.EnterWriteLock();
 
                         /* Check the length */
-                        if (line.Length > 4)
+                        if (line.Length > 5)
                         {
                             /* Create the animation frame */
                             Rectangle frame = source;
@@ -193,12 +204,12 @@ namespace SalvagerEngine.Content
                             frame.Height = int.Parse(line[5]);
 
                             /* Add a texture data with a frame */
-                            mTextures.Add(data_filename, new TextureData(texture, source, frame));
+                            mTextures.Add(line[0], new TextureData(texture, source, frame));
                         }
                         else
                         {
                             /* Add the texture data without an animation frame */
-                            mTextures.Add(data_filename, new TextureData(texture, source));
+                            mTextures.Add(line[0], new TextureData(texture, source));
                         }
                     }
                     finally
@@ -223,7 +234,7 @@ namespace SalvagerEngine.Content
                 mSoundsLock.EnterWriteLock();
 
                 /* Load the sound effect */
-                mSounds.Add(filename, Load<SoundEffect>(filename));
+                mSounds.Add(filename, Load<SoundEffect>(Path.Combine(RootDirectory, filename)));
             }
             finally
             {
@@ -240,7 +251,7 @@ namespace SalvagerEngine.Content
                 mFontsLock.EnterWriteLock();
 
                 /* Load the font */
-                mFonts.Add(filename, Load<SpriteFont>(filename));
+                mFonts.Add(filename, Load<SpriteFont>(Path.Combine(RootDirectory, filename)));
             }
             finally
             {

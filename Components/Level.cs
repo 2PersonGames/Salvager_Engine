@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using SalvagerEngine.Games;
 using SalvagerEngine.Objects;
 
@@ -17,16 +20,17 @@ namespace SalvagerEngine.Components
             get { return mRoot; }
         }
 
-        SpriteBatch mRenderer;
         List<Camera> mCameras;
+        ReaderWriterLockSlim mCameraLock;
 
         /* Constructors */
 
         public Level(SalvagerGame game)
             : base(game)
         {
-            mRenderer = new SpriteBatch(game.GraphicsDevice);
             mCameras = new List<Camera>();
+            mCameraLock = new ReaderWriterLockSlim();
+            mRoot = new GameObject(this, 0.0f);
         }
 
         /* Overrides */
@@ -55,15 +59,19 @@ namespace SalvagerEngine.Components
                 /* Call the base draw */
                 base.Draw(gameTime);
 
+                /* Lock the cameras */
+                mCameraLock.EnterReadLock();
+
                 /* Draw the root node */
                 foreach (Camera camera in mCameras)
                 {
-                    /* Begin rendering */
-                    mRenderer.Begin(camera.SpriteSortMode, camera.BlendState, camera.SamplerState, camera.DepthStencilState, camera.RasterizerState, camera.Effect, camera.View);
                     try
                     {
+                        /* Begin rendering */
+                        camera.Begin();
+
                         /* Render the node */
-                        mRoot.Draw(mRenderer);
+                        mRoot.Draw(camera);
                     }
                     catch (Exception e)
                     {
@@ -73,13 +81,62 @@ namespace SalvagerEngine.Components
                     finally
                     {
                         /* Finish rendering */
-                        mRenderer.End();
+                        camera.End();
                     }
                 }
             }
             catch (Exception e)
             {
+                /* Log the exception */
                 Game.Log(e);
+            }
+            finally
+            {
+                /* Release the camera lock */
+                mCameraLock.ExitReadLock();
+            }
+        }
+
+        /* Accessors */
+
+        public bool ContainsCamera(Camera camera)
+        {
+            try
+            {
+                mCameraLock.EnterReadLock();
+                return mCameras.Contains(camera);
+            }
+            finally
+            {
+                mCameraLock.ExitReadLock();
+            }
+        }
+
+        /* Mutators */
+
+        public void AddCamera(Camera camera)
+        {
+            try
+            {
+                mCameraLock.EnterWriteLock();
+                mCameras.Add(camera);
+            }
+            finally
+            {
+                mCameraLock.ExitWriteLock();
+            }
+        }
+
+        public bool RemoveCamera(Camera camera)
+        {
+            try
+            {
+                mCameraLock.EnterWriteLock();
+                return mCameras.Remove(camera);
+            }
+            finally
+            {
+                mCameraLock.ExitWriteLock();
             }
         }
     }

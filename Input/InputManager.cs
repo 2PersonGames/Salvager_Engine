@@ -69,24 +69,56 @@ namespace SalvagerEngine.Input
 
         /* Accessors */
 
-        public bool IsKeyDown(Keys key)
+        public bool IsKeyDown(params Keys[] key)
         {
-            return mCurrentKeyboard.IsKeyDown(key);
+            foreach (Keys k in key)
+            {
+                if (mCurrentKeyboard.IsKeyDown(k))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public bool IsKeyDownExclusive(Keys key)
+        public bool IsKeyDownExclusive(params Keys[] key)
         {
-            return mCurrentKeyboard.IsKeyDown(key) && mCurrentKeyboard.IsKeyUp(key);
+            foreach (Keys k in key)
+            {
+                if (mCurrentKeyboard.IsKeyDown(k) && mPreviousKeyboard.IsKeyUp(k))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public bool IsKeyUp(Keys key)
+        public bool IsKeyUp(params Keys[] key)
         {
-            return mCurrentKeyboard.IsKeyUp(key);
+            foreach (Keys k in key)
+            {
+                if (mCurrentKeyboard.IsKeyUp(k))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public bool IsKeyUpExclusive(Keys key)
+        public bool IsKeyUpExclusive(params Keys[] key)
         {
-            return mCurrentKeyboard.IsKeyUp(key) && mCurrentKeyboard.IsKeyDown(key);
+            foreach (Keys k in key)
+            {
+                if (mCurrentKeyboard.IsKeyUp(k) && mPreviousKeyboard.IsKeyDown(k))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool IsButtonDown(Buttons button, PlayerIndex player = PlayerIndex.One)

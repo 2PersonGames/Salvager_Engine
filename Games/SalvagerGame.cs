@@ -1,5 +1,9 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework;
+
+using SalvagerEngine.Input;
+using SalvagerEngine.Objects.Physics.Collisions;
 
 namespace SalvagerEngine.Games
 {
@@ -20,15 +24,55 @@ namespace SalvagerEngine.Games
             set { mClearColour = value; }
         }
 
+        SalvagerEngine.Content.ContentManager mContent;
+        public new SalvagerEngine.Content.ContentManager Content
+        {
+            get { return mContent; }
+        }
+
+        Random mRandom;
+        public Random Random
+        {
+            get { return mRandom; }
+        }
+
+        InputManager mInputManager;
+        public InputManager InputManager
+        {
+            get { return mInputManager; }
+        }
+
         /* Constructors */
 
-        public SalvagerGame()
+        public SalvagerGame(string game_name)
         {
+            /* Set some defaults */
+            mRandom = new System.Random();
             mClearColour = Color.CornflowerBlue;
             mGraphics = new GraphicsDeviceManager(this);
+            mContent = new SalvagerEngine.Content.ContentManager(this, "Content");
+            Window.Title = game_name;
         }
 
         /* Overrides */
+
+        protected override void Initialize()
+        {
+            /* Call the base method */
+            base.Initialize();
+             
+            /* Add the input manager */
+            Components.Add((mInputManager = new InputManager(this)));
+
+            /* Add the collision manager */
+            Components.Add(new CollisionManager(this));
+        }
+
+        protected override void LoadContent()
+        {
+            /* Call the base method */
+            base.LoadContent();
+        }
 
         protected override void Update(GameTime gameTime)
         {
@@ -63,11 +107,21 @@ namespace SalvagerEngine.Games
             }
         }
 
+        /* Accessors */
+
+        public static SalvagerGame GetGame(string game_name)
+        {
+#if WINDOWS
+            return new WindowsGame(game_name);
+#endif
+        }
+
         /* Mutators */
 
-        public void Log(Exception e)
+        public void Log(Exception exception)
         {
-            Log(e.ToString());
+            Log(string.Format("{0}\n\tError: {1}\n\tStacktrace:\n{2}", 
+                exception, exception.Message, exception.StackTrace));
         }
 
         /* Abstracts */

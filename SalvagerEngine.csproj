@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -41,14 +41,26 @@
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\Level.cs" />
+    <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Games\SalvagerGame.cs" />
+    <Compile Include="Games\WindowsGame.cs" />
     <Compile Include="Input\InputManager.cs" />
+    <Compile Include="Objects\Effects\EffectObject.cs" />
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Objects\Graphics\GraphicsObject.cs" />
     <Compile Include="Objects\Graphics\Sprite.cs" />
     <Compile Include="Objects\PhysicalObject.cs" />
+    <Compile Include="Objects\Physics\Collisions\Circle.cs" />
+    <Compile Include="Objects\Physics\Collisions\CollisionManager.cs" />
+    <Compile Include="Objects\Physics\Collisions\CollisionObject.cs" />
+    <Compile Include="Objects\Effects\Rotator.cs" />
+    <Compile Include="Objects\Physics\PhysicsEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\DrawManager.cs" />
+    <Compile Include="Tools\Extensions\FloatExtensions.cs" />
+    <Compile Include="Tools\Extensions\MonoGameExtensions.cs" />
+    <Compile Include="Tools\Extensions\TypeExtensions.cs" />
+    <Compile Include="Tools\Extensions\Vector2Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
@@ -71,11 +83,9 @@
       <Link>SDL.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Icon.ico" />
+    <Content Include="logo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\" />
-    <Folder Include="Objects\Physics\" />
     <Folder Include="Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

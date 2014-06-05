@@ -25,6 +25,13 @@ namespace SalvagerEngine.Objects.Graphics
             get { return mOffset; }
             set { mOffset = value; }
         }
+        Vector2 mTransformedOffset;
+        Vector2 mOriginalTransformedOffset;
+        public Vector2 TransformedOffset
+        {
+            get { return mTransformedOffset; }
+            set { mOriginalTransformedOffset = value; }
+        }
         Vector2 mCentre;
         public Vector2 Centre
         {
@@ -74,16 +81,34 @@ namespace SalvagerEngine.Objects.Graphics
         /* Constructors */
 
         public GraphicsObject(Level component_owner, PhysicalObject parent)
-            : base(component_owner)
+            : base(component_owner, 0.0f)
         {
             mParent = parent;
+            mColour = Color.White;
+            mRenderColour = Color.White;
+            mScale = Vector2.One;
         }
 
         /* Overrides */
 
-        protected override void Initialise(out float tick_max)
+        protected override void Tick(float delta)
         {
-            tick_max = 1.0f;
+            /* Calculate the offset */
+            mTransformedOffset = Vector2.Transform(mOriginalTransformedOffset, Matrix.CreateRotationZ(Parent.Rotation));
+        }
+
+        public override float GetDepth()
+        {
+            return mDepth;
+        }
+
+        /* Accessors */
+
+        public abstract Point GetBounds();
+
+        public Vector2 GetActualPosition()
+        {
+            return Parent.Position + mOffset + mTransformedOffset;
         }
     }
 }
