@@ -18,6 +18,11 @@ namespace SalvagerEngine.Objects.Graphics
         public Rectangle Source
         {
             get { return mSource; }
+            protected set 
+            { 
+                mSource = value;
+                Centre = new Vector2(mSource.Width, mSource.Height) * 0.5f;
+            }
         }
 
         Texture2D mTexture;

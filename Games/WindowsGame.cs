@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace SalvagerEngine.Games
 {
-    public sealed class WindowsGame : SalvagerGame
+    public sealed class WindowsGame : DesktopGame
     {
         /* Log Variables */
 #if DEBUG

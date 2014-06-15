@@ -31,28 +31,7 @@ namespace SalvagerEngine.Components
             mCameras = new List<Camera>();
             mCameraLock = new ReaderWriterLockSlim();
             mRoot = new GameObject(this, 0.0f);
-        }
-
-        /* Overrides */
-
-        public override void Update(GameTime gameTime)
-        {
-            try
-            {
-                /* Call the base update */
-                base.Update(gameTime);
-
-                /* Update the root node */
-                mRoot.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            catch (Exception e)
-            {
-                /* Log the exception */
-                Game.Log(e);
-            }
-        }
-
-        public override void Draw(GameTime gameTime)
+        }        public override void Draw(GameTime gameTime)
         {
             try
             {
@@ -96,6 +75,27 @@ namespace SalvagerEngine.Components
                 mCameraLock.ExitReadLock();
             }
         }
+
+
+        /* Overrides */
+
+        public override void Update(GameTime gameTime)
+        {
+            try
+            {
+                /* Call the base update */
+                base.Update(gameTime);
+
+                /* Update the root node */
+                mRoot.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+            catch (Exception e)
+            {
+                /* Log the exception */
+                Game.Log(e);
+            }
+        }
+
 
         /* Accessors */
 

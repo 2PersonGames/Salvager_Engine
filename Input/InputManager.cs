@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
+
 using SalvagerEngine.Games;
 using SalvagerEngine.Components;
 
@@ -32,6 +35,9 @@ namespace SalvagerEngine.Input
 
         MouseState mCurrentMouse;
         MouseState mPreviousMouse;
+
+        TouchCollection mCurrentTouches;
+        TouchCollection mPreviousTouches;
 
         /* Constructors */
 
@@ -65,6 +71,10 @@ namespace SalvagerEngine.Input
 
             mPreviousMouse = mCurrentMouse;
             mCurrentMouse = Mouse.GetState();
+
+            /* Update the touch panel */
+            mPreviousTouches = mCurrentTouches;
+            mCurrentTouches = Microsoft.Xna.Framework.Input.Touch.TouchPanel.GetState();
         }
 
         /* Accessors */
@@ -242,6 +252,11 @@ namespace SalvagerEngine.Input
                 default:
                     return false;
             }
+        }
+
+        public bool IsTouchDown(int index)
+        {
+            return index < mCurrentTouches.Count;
         }
     }
 }

@@ -200,8 +200,8 @@ namespace SalvagerEngine.Content
                         {
                             /* Create the animation frame */
                             Rectangle frame = source;
-                            frame.Width = int.Parse(line[4]);
-                            frame.Height = int.Parse(line[5]);
+                            frame.Width = int.Parse(line[5]);
+                            frame.Height = int.Parse(line[6]);
 
                             /* Add a texture data with a frame */
                             mTextures.Add(line[0], new TextureData(texture, source, frame));
