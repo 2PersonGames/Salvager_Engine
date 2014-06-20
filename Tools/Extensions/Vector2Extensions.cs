@@ -18,13 +18,18 @@ namespace SalvagerEngine.Tools.Extensions
 
         public static float ToRadians(this Vector2 me)
         {
-            Vector2 normalised = Vector2.Normalize(me);
+            me.Normalize();
             return (float)Math.Atan2(me.Y, me.X);
         }
 
         public static Point ToPoint(this Vector2 me)
         {
             return new Point((int)Math.Round(me.X), (int)Math.Round(me.Y));
+        }
+
+        public static Vector2 Modulus(this Vector2 me, Vector2 other)
+        {
+            return new Vector2(me.X % other.X, me.Y % other.Y);
         }
     }
 }
