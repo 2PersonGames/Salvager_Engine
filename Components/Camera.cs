@@ -4,11 +4,16 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using SalvagerEngine.Games;
+using SalvagerEngine.Objects.Graphics;
 
 namespace SalvagerEngine.Components
 {
     public class Camera : IDisposable
     {
+        /* Typedefs and Constants */
+
+        public delegate void RenderEvent (Camera camera);
+
         /* Class Variables */
 
         SpriteBatch mRenderer;
@@ -84,6 +89,14 @@ namespace SalvagerEngine.Components
             mView = Matrix.Identity;
         }
 
+        /* Accessors */
+
+        public Vector2 GetPosition()
+        {
+            return new Vector2(-mView.Translation.X, -mView.Translation.Y) +
+                (new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) * 0.5f);
+        }
+
         /* Mutators */
 
         public void SetPosition(Vector2 position)
@@ -94,19 +107,30 @@ namespace SalvagerEngine.Components
             mView = Matrix.CreateTranslation(new Vector3(-position, 0.0f));
         }
 
-        /* Accessors */
-
-        public Vector2 GetPosition()
-        {
-            return new Vector2(-mView.Translation.X, -mView.Translation.Y) +
-                (new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) * 0.5f); 
-        }
-
         /* Events */
 
         public void Begin()
         {
             mRenderer.Begin(mSpriteSortMode, mBlendState, mSamplerState, mDepthStencilState, mRasterizerState, mEffect, mView);
+        }
+
+        public void RenderObject(RenderEvent render, BlendState blend, SamplerState sampler)
+        {
+            /* Apply the render settings */
+            GraphicsDevice.BlendState = blend;
+            GraphicsDevice.SamplerStates[0] = sampler;
+
+            try
+            {
+                /* Render the object */
+                render(this);
+            }
+            finally
+            {
+                /* Reset the render settings */
+                GraphicsDevice.BlendState = mBlendState;
+                GraphicsDevice.SamplerStates[0] = mSamplerState;
+            }
         }
 
         public void End()

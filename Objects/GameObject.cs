@@ -173,7 +173,7 @@ namespace SalvagerEngine.Objects
         {
         }
 
-        public void Draw(Camera renderer)
+        public void Draw(Camera camera)
         {
             try
             {
@@ -184,12 +184,12 @@ namespace SalvagerEngine.Objects
                 if (mVisible)
                 {
                     /* Render this */
-                    Render(renderer);
+                    Render(camera);
 
                     /* Render each child */
                     foreach (GameObject obj in ForEachChild())
                     {
-                        obj.Draw(renderer);
+                        obj.Draw(camera);
                     }
                 }
             }

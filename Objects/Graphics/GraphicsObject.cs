@@ -78,6 +78,19 @@ namespace SalvagerEngine.Objects.Graphics
             set { mDepth = value; }
         }
 
+        BlendState mBlendState;
+        public BlendState BlendState
+        {
+            get { return mBlendState; }
+            set { mBlendState = value; }
+        }
+        SamplerState mSamplerState;
+        public SamplerState SamplerState
+        {
+            get { return mSamplerState; }
+            set { mSamplerState = value; }
+        }
+
         /* Constructors */
 
         public GraphicsObject(Level component_owner, PhysicalObject parent)
@@ -87,6 +100,8 @@ namespace SalvagerEngine.Objects.Graphics
             mColour = Color.White;
             mRenderColour = Color.White;
             mScale = Vector2.One;
+            mBlendState = BlendState.AlphaBlend;
+            mSamplerState = SamplerState.AnisotropicClamp;
         }
 
         /* Overrides */
@@ -97,10 +112,19 @@ namespace SalvagerEngine.Objects.Graphics
             mTransformedOffset = Vector2.Transform(mOriginalTransformedOffset, Matrix.CreateRotationZ(Parent.Rotation));
         }
 
+        protected sealed override void Render(Camera camera)
+        {
+            camera.RenderObject(RenderObject, mBlendState, mSamplerState);
+        }
+
         public override float GetDepth()
         {
             return mDepth;
         }
+
+        /* Abstracts */
+
+        protected abstract void RenderObject(Camera camera);
 
         /* Accessors */
 

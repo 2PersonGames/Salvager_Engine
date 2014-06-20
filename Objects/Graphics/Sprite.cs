@@ -42,7 +42,7 @@ namespace SalvagerEngine.Objects.Graphics
 
         /* Overrides */
 
-        protected override void Render(Camera camera)
+        protected override void RenderObject(Camera camera)
         {
             /* Render the sprite */
             camera.Renderer.Draw(mTexture, GetActualPosition(), mSource, RenderColour, 
