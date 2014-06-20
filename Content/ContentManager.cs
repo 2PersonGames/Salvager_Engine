@@ -183,39 +183,43 @@ namespace SalvagerEngine.Content
             {
                 try
                 {
-                    /* Read the line */
-                    string[] line = reader.ReadLine().Split('\t');
-
-                    /* Read the source rectangle */
-                    Rectangle source = new Rectangle(int.Parse(line[1]),
-                        int.Parse(line[2]), int.Parse(line[3]), int.Parse(line[4]));
-
-                    try
+                    /* Iterate through the file */
+                    while (!reader.EndOfStream)
                     {
-                        /* Lock the textures */
-                        mTexturesLock.EnterWriteLock();
+                        /* Read the line */
+                        string[] line = reader.ReadLine().Split('\t');
 
-                        /* Check the length */
-                        if (line.Length > 5)
-                        {
-                            /* Create the animation frame */
-                            Rectangle frame = source;
-                            frame.Width = int.Parse(line[5]);
-                            frame.Height = int.Parse(line[6]);
+                        /* Read the source rectangle */
+                        Rectangle source = new Rectangle(int.Parse(line[1]),
+                            int.Parse(line[2]), int.Parse(line[3]), int.Parse(line[4]));
 
-                            /* Add a texture data with a frame */
-                            mTextures.Add(line[0], new TextureData(texture, source, frame));
-                        }
-                        else
+                        try
                         {
-                            /* Add the texture data without an animation frame */
-                            mTextures.Add(line[0], new TextureData(texture, source));
+                            /* Lock the textures */
+                            mTexturesLock.EnterWriteLock();
+
+                            /* Check the length */
+                            if (line.Length > 5)
+                            {
+                                /* Create the animation frame */
+                                Rectangle frame = source;
+                                frame.Width = int.Parse(line[5]);
+                                frame.Height = int.Parse(line[6]);
+
+                                /* Add a texture data with a frame */
+                                mTextures.Add(line[0], new TextureData(texture, source, frame));
+                            }
+                            else
+                            {
+                                /* Add the texture data without an animation frame */
+                                mTextures.Add(line[0], new TextureData(texture, source));
+                            }
                         }
-                    }
-                    finally
-                    {
-                        /* Unlock the textures */
-                        mTexturesLock.ExitWriteLock();
+                        finally
+                        {
+                            /* Unlock the textures */
+                            mTexturesLock.ExitWriteLock();
+                        }
                     }
                 }
                 finally
