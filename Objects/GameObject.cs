@@ -205,7 +205,7 @@ namespace SalvagerEngine.Objects
             }
         }
 
-        protected virtual void Render(Camera renderer)
+        protected virtual void Render(Camera camera)
         {
         }
 

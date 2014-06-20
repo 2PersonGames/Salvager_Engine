@@ -41,10 +41,19 @@ namespace SalvagerEngine.Games
         public DesktopGame(string game_name)
             : base(game_name)
         {
+        }
+
+        // Overrides
+
+        protected override void Initialize()
+        {
+            // Call the base method
+            base.Initialize();
+
+            // Resize the window
 #if DEBUG
             Windowed();
-#endif
-#if RELEASE
+#else
             Fullscreen();
 #endif
         }
