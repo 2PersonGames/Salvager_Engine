@@ -63,9 +63,6 @@ namespace SalvagerEngine.Games
              
             /* Add the input manager */
             Components.Add((mInputManager = new InputManager(this)));
-
-            /* Add the collision manager */
-            Components.Add(new CollisionManager(this));
         }
 
         protected override void LoadContent()

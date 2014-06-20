@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using SalvagerEngine.Games;
 using SalvagerEngine.Objects;
+using SalvagerEngine.Objects.Managers;
 
 namespace SalvagerEngine.Components
 {
@@ -113,6 +114,18 @@ namespace SalvagerEngine.Components
             }
         }
 
+        public CollisionManager GetCollisionManager()
+        {
+            /* Attempt to find an existing collision manager */
+            foreach (CollisionManager obj in mRoot.ForEachChild<CollisionManager>())
+            {
+                return obj;
+            }
+
+            /* Return null */
+            return null;
+        }
+
         /* Mutators */
 
         public void AddCamera(Camera camera)
@@ -138,6 +151,26 @@ namespace SalvagerEngine.Components
             finally
             {
                 mCameraLock.ExitWriteLock();
+            }
+        }
+
+        /* Events */
+
+        public void ToggleCollisionManager(bool enable)
+        {
+            /* Add a collision manager */
+            if (enable)
+            {
+                if (GetCollisionManager() == null)
+                {
+                    mRoot.AddChild(new CollisionManager(this));
+                    mRoot.Update(0.0f);
+                }
+            }
+            /* Remove the collision manager */
+            else if (GetCollisionManager() != null)
+            {
+                GetCollisionManager().Destroy();
             }
         }
     }

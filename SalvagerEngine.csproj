@@ -52,9 +52,9 @@
     <Compile Include="Objects\Graphics\GraphicsObject.cs" />
     <Compile Include="Objects\Graphics\Sprite.cs" />
     <Compile Include="Objects\Graphics\Parallax.cs" />
+    <Compile Include="Objects\Managers\CollisionManager.cs" />
     <Compile Include="Objects\PhysicalObject.cs" />
     <Compile Include="Objects\Physics\Collisions\Circle.cs" />
-    <Compile Include="Objects\Physics\Collisions\CollisionManager.cs" />
     <Compile Include="Objects\Physics\Collisions\CollisionObject.cs" />
     <Compile Include="Objects\Effects\Rotator.cs" />
     <Compile Include="Objects\Physics\Gravity.cs" />
@@ -63,6 +63,7 @@
     <Compile Include="Tools\DrawManager.cs" />
     <Compile Include="Tools\Extensions\FloatExtensions.cs" />
     <Compile Include="Tools\Extensions\MonoGameExtensions.cs" />
+    <Compile Include="Tools\Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Tools\Extensions\TypeExtensions.cs" />
     <Compile Include="Tools\Extensions\Vector2Extensions.cs" />
   </ItemGroup>

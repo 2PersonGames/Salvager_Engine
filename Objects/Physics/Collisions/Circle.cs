@@ -40,15 +40,11 @@ namespace SalvagerEngine.Objects.Physics.Collisions
 
         /* Overrides */
 
-        protected override void Render(Camera renderer)
+        protected override void Render(Camera camera)
         {
 #if DEBUG
             /* Draw a collision circle */
-            if (DebugRender)
-            {
-                DrawManager.DrawCircle(renderer.Renderer, DebugTexture, Color.Yellow,
-                    1, Parent.GetActualPosition(), mRadius, MathHelper.TwoPi, 0.0f, true);
-            }
+            camera.Renderer.DrawCircle(DebugTexture, Color.Yellow, 1, Parent.GetActualPosition(), mRadius, MathHelper.TwoPi, 0.0f, true);
 #endif
         }
 

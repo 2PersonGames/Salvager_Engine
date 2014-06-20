@@ -10,6 +10,7 @@ using SalvagerEngine.Components;
 using SalvagerEngine.Objects.Effects;
 using SalvagerEngine.Tools.Extensions;
 using SalvagerEngine.Objects.Graphics;
+using SalvagerEngine.Objects.Managers;
 
 namespace SalvagerEngine.Objects.Physics.Collisions
 {
@@ -26,13 +27,6 @@ namespace SalvagerEngine.Objects.Physics.Collisions
         protected static Texture2D DebugTexture
         {
             get { return mDebugTexture; }
-        }
-
-        bool mDebugRender;
-        public bool DebugRender
-        {
-            get { return mDebugRender; }
-            set { mDebugRender = value; }
         }
 #endif
 
@@ -62,12 +56,20 @@ namespace SalvagerEngine.Objects.Physics.Collisions
                 mDebugTexture = new Texture2D(parent.ComponentOwner.GraphicsDevice, 1, 1);
                 mDebugTexture.SetData(new Color[] { Color.White });
             }
-
-            /* Set debug rendering to false */
-            mDebugRender = false;
 #endif
 
             mCollideableTypes = new Type[0];
+
+            /* Add the collision object to the collision manager */
+            CollisionManager manager = parent.ComponentOwner.GetCollisionManager();
+            if (manager == null)
+            {
+                parent.ComponentOwner.Game.Log("No collision manager present!");
+            }
+            else
+            {
+                manager.AddChild(this);
+            }
         }
 
         /* Accessors */
