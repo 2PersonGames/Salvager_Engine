@@ -26,7 +26,9 @@ namespace SalvagerEngine.Objects.Graphics
 
         Texture2D mTexture;
         Rectangle mSource;
+        Vector2 mCentre;
         Color mColour;
+        Vector2 mScale;
 
         float mDepth;
         float mSpeed;
@@ -46,6 +48,11 @@ namespace SalvagerEngine.Objects.Graphics
 
             // Load the texture
             mTexture = component_owner.Game.Content.GetTexture(texture_name, out mSource);
+            mCentre = new Vector2(mSource.Width, mSource.Height) * 0.5f;
+
+            // Calculate the scale
+            mScale = new Vector2(component_owner.GraphicsDevice.Viewport.Width / (float)mSource.Width, 
+                component_owner.GraphicsDevice.Viewport.Height / (float)mSource.Height);
         }
 
         // Overrides
@@ -53,14 +60,11 @@ namespace SalvagerEngine.Objects.Graphics
         protected override void Render(Camera camera)
         {
             // Retrieve the viewport
-            Vector2 viewport = new Vector2((float)camera.Renderer.GraphicsDevice.Viewport.Width,
-                (float)camera.Renderer.GraphicsDevice.Viewport.Height);
-
-            // Calculate the scale
-            Vector2 scale = new Vector2(viewport.X / mSource.Width, viewport.Y / mSource.Height);
+            Vector2 viewport = new Vector2((float)camera.Viewport.Width, 
+                (float)camera.Viewport.Height);
 
             // Retrieve the camera position
-            Vector2 position = camera.GetPosition();
+            Vector2 position = camera.Position + (mCentre * mScale);
 
             // Calculate the positions
             Vector2[] positions = null;
@@ -71,8 +75,8 @@ namespace SalvagerEngine.Objects.Graphics
                     speed = new Vector2(speed.X, 1.0f);
                     positions = new Vector2[]
                     {
-                        new Vector2(0.0f, viewport.Y - position.Y),
-                        new Vector2(-viewport.X, viewport.Y - position.Y)
+                        new Vector2(0.0f, position.Y - viewport.Y),
+                        new Vector2(-viewport.X, position.Y - viewport.Y)
                     };
                     break;
 
@@ -104,8 +108,8 @@ namespace SalvagerEngine.Objects.Graphics
             for (int i = 0; i < positions.Length; i++)
             {
                 // Render the parallax
-                camera.Renderer.Draw(mTexture, position - (((position * speed) - positions[i]).Modulus(viewport * 2.0f) - (viewport * 0.5f)), 
-                    mSource, mColour, 0.0f, Vector2.Zero, scale, (SpriteEffects)i, mDepth);
+                camera.Renderer.Draw(mTexture, position - (((position * speed) - positions[i]).Modulus(viewport * 2.0f) - (viewport * 0.5f)),
+                    mSource, mColour, 0.0f, mCentre, mScale, (SpriteEffects)i, mDepth);
             }
         }
 

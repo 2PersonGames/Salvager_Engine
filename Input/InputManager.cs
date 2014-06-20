@@ -182,7 +182,7 @@ namespace SalvagerEngine.Input
             }
         }
 
-        public bool IMouseButtonDownExclusive(MouseButton button)
+        public bool IsMouseButtonDownExclusive(MouseButton button)
         {
             switch (button)
             {
@@ -252,6 +252,11 @@ namespace SalvagerEngine.Input
                 default:
                     return false;
             }
+        }
+
+        public int GetMouseScrollDelta()
+        {
+            return mCurrentMouse.ScrollWheelValue - mPreviousMouse.ScrollWheelValue;
         }
 
         public bool IsTouchDown(int index)

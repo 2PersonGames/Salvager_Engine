@@ -14,7 +14,7 @@ namespace SalvagerEngine.Components
 
         public delegate void RenderEvent (Camera camera);
 
-        /* Class Variables */
+        /* Render Variables */
 
         SpriteBatch mRenderer;
         public SpriteBatch Renderer
@@ -64,15 +64,25 @@ namespace SalvagerEngine.Components
             set { mEffect = value; }
         }
 
-        Matrix mView;
-        public Matrix View
+        /* Camera Variables */
+
+        public float MaxZoom { get; set; }
+        public float MinZoom { get; set; }
+
+        public Vector2 Position { get; set; }
+
+        float mZoom;
+        public float Zoom
         {
-            get { return mView; }
+            get { return mZoom; }
+            set { mZoom = MathHelper.Clamp(value, MinZoom, MaxZoom); }
         }
 
-        public GraphicsDevice GraphicsDevice
+        float mRotation;
+        public float Rotation
         {
-            get { return mRenderer.GraphicsDevice; }
+            get { return mRotation; }
+            set { mRotation = MathHelper.WrapAngle(value); }
         }
 
         /* Constructors */
@@ -86,32 +96,36 @@ namespace SalvagerEngine.Components
             mDepthStencilState = DepthStencilState.Default;
             mRasterizerState = RasterizerState.CullNone;
             mEffect = null;
-            mView = Matrix.Identity;
+
+            MaxZoom = float.MaxValue;
+            MinZoom = -float.MaxValue;
+            Position = Vector2.Zero;
+            mZoom = 1.0f;
+            mRotation = 0.0f;
         }
 
         /* Accessors */
 
-        public Vector2 GetPosition()
+        public GraphicsDevice GraphicsDevice
         {
-            return new Vector2(-mView.Translation.X, -mView.Translation.Y) +
-                (new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) * 0.5f);
+            get { return mRenderer.GraphicsDevice; }
         }
 
-        /* Mutators */
-
-        public void SetPosition(Vector2 position)
+        public Viewport Viewport
         {
-            /* Modify the position to take the viewport into account and centre the position */
+            get { return GraphicsDevice.Viewport; }
+        }
 
-            /* Set the translation matrix */
-            mView = Matrix.CreateTranslation(new Vector3(-position, 0.0f));
+        public Matrix CalculateViewMatrix()
+        {
+            return CalculteCamera(Position, new Vector2(mZoom), mRotation, new Vector2(Viewport.Width, Viewport.Height) * 0.5f);
         }
 
         /* Events */
 
         public void Begin()
         {
-            mRenderer.Begin(mSpriteSortMode, mBlendState, mSamplerState, mDepthStencilState, mRasterizerState, mEffect, mView);
+            mRenderer.Begin(mSpriteSortMode, mBlendState, mSamplerState, mDepthStencilState, mRasterizerState, mEffect, CalculateViewMatrix());
         }
 
         public void RenderObject(RenderEvent render, BlendState blend, SamplerState sampler)
@@ -136,6 +150,16 @@ namespace SalvagerEngine.Components
         public void End()
         {
             mRenderer.End();
+        }
+
+        /* Utilities */
+
+        public static Matrix CalculteCamera(Vector2 position, Vector2 scale, float rotation, Vector2 centre)
+        {
+            return Matrix.CreateTranslation(-new Vector3(position, 0.0f)) *
+                    Matrix.CreateRotationZ(rotation) *
+                    Matrix.CreateScale(new Vector3(scale, 1.0f)) *
+                    Matrix.CreateTranslation(new Vector3(centre, 0.0f));
         }
 
         /* Interfaces */
