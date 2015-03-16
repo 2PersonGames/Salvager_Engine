@@ -1,18 +1,42 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine", "SalvagerEngine.csproj", "{4239526C-FBD2-4879-9605-D37A57B0C947}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine_Old", "Old\SalvagerEngine_Old.csproj", "{4239526C-FBD2-4879-9605-D37A57B0C947}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine.Storage", "SalvagerEngine.Storage\SalvagerEngine.Storage.csproj", "{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4239526C-FBD2-4879-9605-D37A57B0C947}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{4239526C-FBD2-4879-9605-D37A57B0C947}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{4239526C-FBD2-4879-9605-D37A57B0C947}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{4239526C-FBD2-4879-9605-D37A57B0C947}.Debug|x86.ActiveCfg = Debug|x86
 		{4239526C-FBD2-4879-9605-D37A57B0C947}.Debug|x86.Build.0 = Debug|x86
+		{4239526C-FBD2-4879-9605-D37A57B0C947}.Release|Any CPU.ActiveCfg = Release|x86
+		{4239526C-FBD2-4879-9605-D37A57B0C947}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{4239526C-FBD2-4879-9605-D37A57B0C947}.Release|Mixed Platforms.Build.0 = Release|x86
 		{4239526C-FBD2-4879-9605-D37A57B0C947}.Release|x86.ActiveCfg = Release|x86
 		{4239526C-FBD2-4879-9605-D37A57B0C947}.Release|x86.Build.0 = Release|x86
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B7C00AB2-F28F-4B9C-8CD8-C2708F06EF0E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
