@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace SalvagerEngine.Storage
+namespace SalvagerEngine.Storage.Files
 {
     public abstract class BaseFile : IDisposable
     {

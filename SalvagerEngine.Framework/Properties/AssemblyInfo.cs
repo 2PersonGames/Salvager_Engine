@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SalvagerEngine.Storage")]
+[assembly: AssemblyTitle("SalvagerEngine.Framework")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sam Albon")]
-[assembly: AssemblyProduct("SalvagerEngine.Storage")]
+[assembly: AssemblyProduct("SalvagerEngine.Framework")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("00b411b5-b48d-4908-92e4-b25b4824ff0e")]
+[assembly: Guid("673d64f5-e01d-418c-8d4a-f521e5a7f60c")]
 
 // Version information for an assembly consists of the following four values:
 //
