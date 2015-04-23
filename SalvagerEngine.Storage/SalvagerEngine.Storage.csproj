@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Content\SalvagerContentManager.cs" />
     <Compile Include="Files\BaseFile.cs" />
+    <Compile Include="Files\LivingFile.cs" />
     <Compile Include="Files\LockFile.cs" />
     <Compile Include="Files\ItemFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
