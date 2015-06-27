@@ -5,11 +5,14 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+
+using SalvagerEngine.Interfaces.Storage.Content;
 
 namespace SalvagerEngine.Storage.Content
 {
-    public class SalvagerContentManager : Microsoft.Xna.Framework.Content.ContentManager
+    public class SalvagerContentManager : ContentManager, ISalvagerContentManager
     {
         /* Typedefs and Constants */
 

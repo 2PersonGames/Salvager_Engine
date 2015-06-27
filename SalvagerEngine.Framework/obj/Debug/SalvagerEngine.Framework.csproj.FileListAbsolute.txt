@@ -33,3 +33,7 @@ D:\Git\Salvager_Engine\SalvagerEngine.Framework\bin\Debug\zh-Hans\Microsoft.Expr
 D:\Git\Salvager_Engine\SalvagerEngine.Framework\bin\Debug\zh-Hant\Microsoft.Expression.Drawing.resources.dll
 D:\Git\Salvager_Engine\SalvagerEngine.Framework\obj\Debug\SalvagerEngine.Framework.dll
 D:\Git\Salvager_Engine\SalvagerEngine.Framework\obj\Debug\SalvagerEngine.Framework.pdb
+D:\Git\Salvager_Engine\SalvagerEngine.Framework\bin\Debug\SalvagerEngine.Interfaces.dll
+D:\Git\Salvager_Engine\SalvagerEngine.Framework\bin\Debug\SalvagerEngine.Objects.dll
+D:\Git\Salvager_Engine\SalvagerEngine.Framework\bin\Debug\SalvagerEngine.Interfaces.pdb
+D:\Git\Salvager_Engine\SalvagerEngine.Framework\bin\Debug\SalvagerEngine.Objects.pdb

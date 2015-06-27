@@ -47,32 +47,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\Level.cs" />
     <Compile Include="Games\DesktopGame.cs" />
     <Compile Include="Games\SalvagerGame.cs" />
     <Compile Include="Games\WindowsGame.cs" />
     <Compile Include="Input\InputManager.cs" />
-    <Compile Include="Objects\Effects\EffectObject.cs" />
-    <Compile Include="Objects\Effects\Rotator.cs" />
-    <Compile Include="Objects\GameObject.cs" />
-    <Compile Include="Objects\Graphics\Animation.cs" />
-    <Compile Include="Objects\Graphics\GraphicsObject.cs" />
-    <Compile Include="Objects\Graphics\Parallax.cs" />
-    <Compile Include="Objects\Graphics\Sprite.cs" />
-    <Compile Include="Objects\Managers\CollisionManager.cs" />
-    <Compile Include="Objects\PhysicalObject.cs" />
-    <Compile Include="Objects\Physics\Collisions\Circle.cs" />
-    <Compile Include="Objects\Physics\Collisions\CollisionObject.cs" />
-    <Compile Include="Objects\Physics\Gravity.cs" />
-    <Compile Include="Objects\Physics\PhysicsEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SalvagerEngine.Interfaces\SalvagerEngine.Interfaces.csproj">
+      <Project>{2c0c9382-b528-4759-88f6-11480be05705}</Project>
+      <Name>SalvagerEngine.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SalvagerEngine.Rendering\SalvagerEngine.Objects.csproj">
+      <Project>{22a83760-97f9-446b-8523-ab0c4896a639}</Project>
+      <Name>SalvagerEngine.Objects</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SalvagerEngine.Storage\SalvagerEngine.Storage.csproj">
       <Project>{b7c00ab2-f28f-4b9c-8cd8-c2708f06ef0e}</Project>
       <Name>SalvagerEngine.Storage</Name>
@@ -82,6 +76,7 @@
       <Name>SalvagerEngine.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

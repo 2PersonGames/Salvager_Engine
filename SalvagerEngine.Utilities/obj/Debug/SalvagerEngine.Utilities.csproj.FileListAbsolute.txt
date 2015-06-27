@@ -1,4 +1,3 @@
-D:\Git\Salvager_Engine\SalvagerEngine.Utilities\obj\Debug\SalvagerEngine.Utilities.csprojResolveAssemblyReference.cache
 D:\Git\Salvager_Engine\SalvagerEngine.Utilities\bin\Debug\SalvagerEngine.Utilities.dll
 D:\Git\Salvager_Engine\SalvagerEngine.Utilities\bin\Debug\SalvagerEngine.Utilities.pdb
 D:\Git\Salvager_Engine\SalvagerEngine.Utilities\bin\Debug\MonoGame.Framework.dll

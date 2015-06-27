@@ -22,6 +22,7 @@ namespace SalvagerEngine.Storage.Files
         public LivingFile(string localFilePath)
             : base(localFilePath)
         {
+            mAttributeLock = new ReaderWriterLockSlim();
             mAttributes = new Dictionary<string, object>();
         }
 
@@ -29,43 +30,38 @@ namespace SalvagerEngine.Storage.Files
 
         protected override bool Load(StreamReader reader)
         {
-            bool success = true;
-
-                try
+            try
+            {
+                mAttributes.Clear();
+                while (!reader.EndOfStream)
                 {
-                    mAttributes.Clear();
-                    while (!reader.EndOfStream)
-                    {
-                        var lines = reader.ReadLine().Split('\t');
-                        TypeDescriptor.GetConverter(Type.GetType(lines[1]));
-                        mAttributes.Add(lines[0], TypeDescriptor.GetConverter(Type.GetType(lines[1])).ConvertFrom(lines[2]));
-                    }
+                    var lines = reader.ReadLine().Split('\t');
+                    TypeDescriptor.GetConverter(Type.GetType(lines[1]));
+                    mAttributes.Add(lines[0], TypeDescriptor.GetConverter(Type.GetType(lines[1])).ConvertFrom(lines[2]));
                 }
-                catch (Exception)
-                {
-                    success = false;
-                }
-
-            return success;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         protected override bool Save(StreamWriter writer)
         {
-            bool success = true;
-
             try
             {
                 foreach (var key in mAttributes.Keys)
                 {
                     writer.WriteLine(string.Format("{0}\t{1}\t{2}", key, mAttributes[key].GetType(), mAttributes[key]));
                 }
+
+                return true;
             }
             catch (Exception)
             {
-                success = false;
+                return false;
             }
-
-            return success;
         }
 
         // Accessors

@@ -1,6 +1,5 @@
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SalvagerEngine.Storage.dll
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SalvagerEngine.Storage.pdb
-D:\Git\Salvager_Engine\SalvagerEngine.Storage\obj\Debug\SalvagerEngine.Storage.csprojResolveAssemblyReference.cache
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\obj\Debug\SalvagerEngine.Storage.dll
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\obj\Debug\SalvagerEngine.Storage.pdb
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\MonoGame.Framework.dll
@@ -19,3 +18,6 @@ D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SharpDX.Direct2D1.xml
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SharpDX.DXGI.xml
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SharpDX.XInput.xml
 D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SharpDX.MediaFoundation.xml
+D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SalvagerEngine.Interfaces.dll
+D:\Git\Salvager_Engine\SalvagerEngine.Storage\bin\Debug\SalvagerEngine.Interfaces.pdb
+D:\Git\Salvager_Engine\SalvagerEngine.Storage\obj\Debug\SalvagerEngine.Storage.csprojResolveAssemblyReference.cache

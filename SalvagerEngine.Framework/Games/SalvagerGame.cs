@@ -4,11 +4,12 @@ using Microsoft.Xna.Framework;
 
 using SalvagerEngine.Storage.Content;
 using SalvagerEngine.Framework.Input;
-using SalvagerEngine.Framework.Objects.Physics.Collisions;
+using SalvagerEngine.Interfaces.Games;
+using SalvagerEngine.Interfaces.Storage.Content;
 
 namespace SalvagerEngine.Framework.Games
 {
-    public abstract class SalvagerGame : Game
+    public abstract class SalvagerGame : Game, ISalvagerGame
     {
         /* Class Variables */
         
@@ -26,7 +27,7 @@ namespace SalvagerEngine.Framework.Games
         }
 
         SalvagerContentManager mContent;
-        public new SalvagerContentManager Content
+        public new ISalvagerContentManager Content
         {
             get { return mContent; }
         }

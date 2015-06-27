@@ -5,33 +5,35 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using SalvagerEngine.Framework.Games;
-using SalvagerEngine.Framework.Objects;
-using SalvagerEngine.Framework.Objects.Managers;
+using SalvagerEngine.Interfaces.Games;
+using SalvagerEngine.Interfaces.Objects;
+using SalvagerEngine.Interfaces.Components;
+using SalvagerEngine.Interfaces.Objects.Managers;
+using SalvagerEngine.Interfaces.Objects.Graphics;
 
 namespace SalvagerEngine.Framework.Components
 {
-    public class Level : Component
+    public class Level : Component, ILevel
     {
         /* Class Variables */
 
-        GameObject mRoot;
-        public GameObject Root
+        IGameObject mRoot;
+        public IGameObject Root
         {
             get { return mRoot; }
         }
 
-        List<Camera> mCameras;
+        List<ICamera> mCameras;
         ReaderWriterLockSlim mCameraLock;
 
         /* Constructors */
 
-        public Level(SalvagerGame game)
+        public Level(ISalvagerGame game)
             : base(game)
         {
-            mCameras = new List<Camera>();
+            mCameras = new List<ICamera>();
             mCameraLock = new ReaderWriterLockSlim();
-            mRoot = new GameObject(this, 0.0f);
+            mRoot = new SalvagerEngine.Objects.GameObject(this, 0.0f);
         }
 
         /* Overrides */
@@ -98,10 +100,9 @@ namespace SalvagerEngine.Framework.Components
             }
         }
 
-
         /* Accessors */
 
-        public bool ContainsCamera(Camera camera)
+        public bool ContainsCamera(ICamera camera)
         {
             try
             {
@@ -114,10 +115,10 @@ namespace SalvagerEngine.Framework.Components
             }
         }
 
-        public CollisionManager GetCollisionManager()
+        public ICollisionManager GetCollisionManager()
         {
             /* Attempt to find an existing collision manager */
-            foreach (CollisionManager obj in mRoot.ForEachChild<CollisionManager>())
+            foreach (var obj in mRoot.ForEachChild<ICollisionManager>())
             {
                 return obj;
             }
@@ -126,9 +127,19 @@ namespace SalvagerEngine.Framework.Components
             return null;
         }
 
+        public void Log(string message)
+        {
+            Game.Log(message);
+        }
+
+        public void Log(Exception exception)
+        {
+            Game.Log(exception);
+        }
+
         /* Mutators */
 
-        public void AddCamera(Camera camera)
+        public void AddCamera(ICamera camera)
         {
             try
             {
@@ -141,7 +152,7 @@ namespace SalvagerEngine.Framework.Components
             }
         }
 
-        public bool RemoveCamera(Camera camera)
+        public bool RemoveCamera(ICamera camera)
         {
             try
             {
@@ -163,7 +174,7 @@ namespace SalvagerEngine.Framework.Components
             {
                 if (GetCollisionManager() == null)
                 {
-                    mRoot.AddChild(new CollisionManager(this));
+                    mRoot.AddChild(new SalvagerEngine.Objects.Managers.CollisionManager(this));
                     mRoot.Update(0.0f);
                 }
             }

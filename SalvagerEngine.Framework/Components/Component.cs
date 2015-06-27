@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using SalvagerEngine.Interfaces.Games;
 
-using SalvagerEngine.Framework.Games;
-using SalvagerEngine.Framework.Objects;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SalvagerEngine.Framework.Components
 {
@@ -13,9 +12,9 @@ namespace SalvagerEngine.Framework.Components
     {
         /* Class Variables */
 
-        public new SalvagerGame Game
+        public new ISalvagerGame Game
         {
-            get { return base.Game as SalvagerGame; }
+            get { return base.Game as ISalvagerGame; }
         }
 
         EventHandler mOnDispose;
@@ -27,8 +26,8 @@ namespace SalvagerEngine.Framework.Components
 
         /* Constructors */
 
-        public Component(SalvagerGame game)
-            : base(game)
+        public Component(ISalvagerGame game)
+            : base(game as Game)
         {
         }
 
