@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine.Framework", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine.Utilities", "SalvagerEngine.Utilities\SalvagerEngine.Utilities.csproj", "{32BBB321-BB21-4F66-B49A-D337C1700ACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine.Objects", "SalvagerEngine.Rendering\SalvagerEngine.Objects.csproj", "{22A83760-97F9-446B-8523-AB0C4896A639}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine.Objects", "SalvagerEngine.Objects\SalvagerEngine.Objects.csproj", "{22A83760-97F9-446B-8523-AB0C4896A639}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalvagerEngine.Interfaces", "SalvagerEngine.Interfaces\SalvagerEngine.Interfaces.csproj", "{2C0C9382-B528-4759-88F6-11480BE05705}"
 EndProject
